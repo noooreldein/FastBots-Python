@@ -288,6 +288,27 @@ def Run(msg, data):
             os.execv(sys.executable, [sys.executable] + sys.argv)
             return False
 
+        if text == "✨ تنظيف الملفات":
+            import shutil
+            cleaned = 0
+            for root, dirs, files in os.walk("./source"):
+                for d in list(dirs):
+                    if d == "__pycache__":
+                        shutil.rmtree(os.path.join(root, d), ignore_errors=True)
+                        cleaned += 1
+                for fn in list(files):
+                    if fn.endswith(".pyc") or fn.endswith(".bak") or fn == "0":
+                        try:
+                            os.remove(os.path.join(root, fn))
+                            cleaned += 1
+                        except:
+                            pass
+            if os.path.exists("./update"):
+                shutil.rmtree("./update", ignore_errors=True)
+                cleaned += 1
+            send(chat_id, msg_id, f"✨ تم تنظيف {cleaned} ملف/مجلد من الملفات المؤقتة\n✨ تم مسح الكاش والملفات القديمة", "md", True)
+            return False
+
         reply_to_msg_id = data.get('reply_to_message_id', 0)
         if reply_to_msg_id != 0:
             Message_Get = bot.getMessage(chat_id, reply_to_msg_id)
@@ -339,7 +360,8 @@ def Run(msg, data):
                         {'text': '✨ تعطيل الوضع المجاني', 'type': 'text', 'style': 'danger', 'icon_custom_emoji_id': 5837029841399975415}
                     ],
                     [
-                        {'text': '✨ تحديث المصنوعات', 'type': 'text', 'style': 'primary', 'icon_custom_emoji_id': 5433878454078556670}
+                        {'text': '✨ تحديث المصنوعات', 'type': 'text', 'style': 'primary', 'icon_custom_emoji_id': 5433878454078556670},
+                        {'text': '✨ تنظيف الملفات', 'type': 'text', 'style': 'danger', 'icon_custom_emoji_id': 5307659638810877853}
                     ],
                     [
                         {'text': '✨ عدد البوتات', 'type': 'text', 'style': 'primary', 'icon_custom_emoji_id': 6269451181735546806}
@@ -433,6 +455,7 @@ def Run(msg, data):
                     env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={gp_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
                 time.sleep(3)
                 send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
+                subprocess.run("find ./source -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null; find ./source -name *.pyc -delete 2>/dev/null; find ./source -name *.bak -delete 2>/dev/null", shell=True)
                 subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                 time.sleep(1)
                 subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
@@ -528,6 +551,8 @@ def Run(msg, data):
                         env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={gp_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
                     time.sleep(3)
                     send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
+                    subprocess.run("find ./source -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null; find ./source -name *.pyc -delete 2>/dev/null; find ./source -name *.bak -delete 2>/dev/null", shell=True)
+                    subprocess.run("find ./source -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null; find ./source -name *.pyc -delete 2>/dev/null; find ./source -name *.bak -delete 2>/dev/null", shell=True)
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                     time.sleep(1)
                     subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
