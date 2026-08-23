@@ -427,9 +427,10 @@ def Run(msg, data):
                 dev_user_val = r_get(f"{Fast}{sender_id}dev:user")
                 dev_id_val = r_get(f"{Fast}{sender_id}dev:id")
                 session_val = r_get(f"{Fast}{sender_id}session")
+                gp_id_val = r_get(f"{Fast}{sender_id}gp:id") or dev_id_val
 
                 with open("./source/.env", "w", encoding="utf-8") as env_file:
-                    env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={dev_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
+                    env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={gp_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
                 time.sleep(3)
                 send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
                 subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
@@ -522,9 +523,10 @@ def Run(msg, data):
                     dev_user_val = r_get(f"{Fast}{sender_id}dev:user")
                     dev_id_val = r_get(f"{Fast}{sender_id}dev:id")
                     session_val = r_get(f"{Fast}{sender_id}session")
+                    gp_id_val = r_get(f"{Fast}{sender_id}gp:id") or dev_id_val
 
                     with open("./source/.env", "w", encoding="utf-8") as env_file:
-                        env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={dev_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
+                        env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={gp_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
                     time.sleep(3)
                     send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
@@ -583,7 +585,7 @@ def Run(msg, data):
             for folder in folders:
                 if re.match(r'@[a-zA-Z0-9_]', folder) and os.path.isdir(folder):
                     screen_name = folder.replace('@', '')
-                    subprocess.run(f"cp -a ./update/. ./{folder} 2>/dev/null || true; cd {folder} && chmod +x * && screen -X -S {screen_name} quit && screen -d -m -S {screen_name} sh -c 'cd . && python3 -m YukkiMusic'", shell=True)
+                    subprocess.run(f"cp -a ./update/. ./{folder} 2>/dev/null || true; cd {folder} && chmod +x * && screen -X -S {screen_name} quit 2>/dev/null || true; screen -d -m -S {screen_name} sh -c 'cd . && python3 -m YukkiMusic'", shell=True)
                     r += 1
             subprocess.run("rm -fr ./source/*", shell=True)
             subprocess.run("cp -a ./update/. ./source 2>/dev/null || true", shell=True)
@@ -626,7 +628,7 @@ def Run(msg, data):
                         Redis.srem(f"{Fast}bots", v)
             subprocess.run(f"rm -fr {text}", shell=True)
             screen_name = text.replace('@', '')
-            subprocess.run(f"screen -X -S {screen_name} quit", shell=True)
+            subprocess.run(f"screen -X -S {screen_name} quit 2>/dev/null || true", shell=True)
             send(chat_id, msg_id, "\n✨ تم حذف البوت بنجاح", "md", True)
             Redis.delete(f"{Fast}{sender_id}make:bot")
             return False
@@ -866,9 +868,10 @@ def Run(msg, data):
                     dev_user_val = r_get(f"{Fast}{sender_id}dev:user")
                     dev_id_val = r_get(f"{Fast}{sender_id}dev:id")
                     session_val = r_get(f"{Fast}{sender_id}session")
+                    gp_id_val = r_get(f"{Fast}{sender_id}gp:id") or dev_id_val
 
                     with open("./source/.env", "w", encoding="utf-8") as env_file:
-                        env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={dev_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
+                        env_file.write(f"API_ID=10823881\nAPI_HASH=339886e2109eb67203ce12022b32e035\nBOT_TOKEN={token_val}\nMONGO_DB_URI={random.choice(mongodb_list)}\nLOG_GROUP_ID={gp_id_val}\nMUSIC_BOT_NAME={userbot_val}\nSTRING_SESSION={session_val}\nOWNER_ID={dev_id_val}")
                     time.sleep(3)
                     send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
@@ -935,7 +938,7 @@ def Run(msg, data):
                         if botuser in v:
                             Redis.srem(f"{Fast}bots", v)
                 subprocess.run(f"rm -fr @{botuser}", shell=True)
-                subprocess.run(f"screen -X -S {botuser} quit", shell=True)
+                subprocess.run(f"screen -X -S {botuser} quit 2>/dev/null || true", shell=True)
                 Redis.delete(f"{Fast}{sender_id}botuser")
                 send(chat_id, msg_id, "\n✨ تم حذف البوت بنجاح", "md", True)
             else:
