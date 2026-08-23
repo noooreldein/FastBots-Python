@@ -1,1 +1,1 @@
-python3.8 -m YukkiMusic
+python3 -m YukkiMusic
