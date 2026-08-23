@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data_store.json
+Information.py
+.CallBack-Bot/
+*.log
