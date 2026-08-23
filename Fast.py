@@ -264,9 +264,9 @@ def Run(msg, data):
     if isinstance(content, dict) and 'text' in content:
         text_obj = content.get('text', {})
         if isinstance(text_obj, dict):
-            text = text_obj.get('text', '')
+            text = text_obj.get('text', '').strip() if text_obj.get('text') else ''
         elif isinstance(text_obj, str):
-            text = text_obj
+            text = text_obj.strip()
 
     sender_id_obj = data.get('sender_id', {}) if isinstance(data, dict) else {}
     sender_id = sender_id_obj.get('user_id', 0) if isinstance(sender_id_obj, dict) else 0
@@ -470,7 +470,7 @@ def Run(msg, data):
             return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "devuser":
-            m_devusr = re.match(r"^@(.*)$", text)
+            m_devusr = re.match(r"^@(.+)$", text.strip())
             if m_devusr:
                 UserName = m_devusr.group(1)
                 if re.search(r'(\S+)[Bb][Oo][Tt]', UserName):
@@ -479,7 +479,7 @@ def Run(msg, data):
                 Redis.set(f"{Fast}{sender_id}dev:user", UserName)
                 Redis.set(f"{Fast}{sender_id}make:bot", "devid")
                 return send(chat_id, msg_id, "✨ تم حفظ معرف المطور \n✨ ارسل الان ايدي المطور (رقمي) \n✨ احصل عليه من @userinfobot")
-            send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
+            send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه\n✨ ارسل المعرف بشكل صحيح مثال: @username", "md", True)
             return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "session":
@@ -833,7 +833,7 @@ def Run(msg, data):
             return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "devuser":
-            m_devusr = re.match(r"^@(.*)$", text)
+            m_devusr = re.match(r"^@(.+)$", text.strip())
             if m_devusr:
                 UserName = m_devusr.group(1)
                 if re.search(r'(\S+)[Bb][Oo][Tt]', UserName):
@@ -842,7 +842,7 @@ def Run(msg, data):
                 Redis.set(f"{Fast}{sender_id}dev:user", UserName)
                 Redis.set(f"{Fast}{sender_id}make:bot", "devid")
                 return send(chat_id, msg_id, "✨ تم حفظ معرف المطور \n✨ ارسل الان ايدي المطور (رقمي) \n✨ احصل عليه من @userinfobot")
-            send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
+            send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه\n✨ ارسل المعرف بشكل صحيح مثال: @username", "md", True)
             return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "session":
@@ -1011,7 +1011,6 @@ def callback(data):
             Run(fake_msg, fake_msg)
 
 # Startup environment checks
-print("FastBots v2.0 - Pure Python (No TDLib, No Redis) starting...")
 _screen_check = subprocess.run("which screen", shell=True, capture_output=True, text=True)
 if _screen_check.returncode != 0:
     print("⚠️  WARNING: 'screen' is not installed! Bots won't start.")
