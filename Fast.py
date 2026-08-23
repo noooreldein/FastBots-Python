@@ -1010,5 +1010,21 @@ def callback(data):
             }
             Run(fake_msg, fake_msg)
 
+# Startup environment checks
+print("FastBots v2.0 - Pure Python (No TDLib, No Redis) starting...")
+_screen_check = subprocess.run("which screen", shell=True, capture_output=True, text=True)
+if _screen_check.returncode != 0:
+    print("⚠️  WARNING: 'screen' is not installed! Bots won't start.")
+    print("   Install it: apt install screen -y")
+else:
+    print(f"✅ screen found: {_screen_check.stdout.strip()}")
+
+_ffmpeg_check = subprocess.run("which ffmpeg", shell=True, capture_output=True, text=True)
+if _ffmpeg_check.returncode != 0:
+    print("⚠️  WARNING: 'ffmpeg' is not installed! Music bots won't work.")
+    print("   Install it: apt install ffmpeg -y")
+else:
+    print(f"✅ ffmpeg found: {_ffmpeg_check.stdout.strip()}")
+
 if __name__ == "__main__":
     bot.run(callback)
