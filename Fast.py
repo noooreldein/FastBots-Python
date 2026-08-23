@@ -435,10 +435,9 @@ def Run(msg, data):
                 send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
                 subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                 time.sleep(1)
-                subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt -q 2>&1 || true", shell=True)
-                time.sleep(2)
-                subprocess.run(f"screen -m -d -S {userbot_val} sh -c 'cd @{userbot_val} && python3 -m YukkiMusic'", shell=True)
-                time.sleep(3)
+                subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
+                subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1'", shell=True)
+                time.sleep(5)
 
                 Redis.delete(f"{Fast}{sender_id}bottoken")
                 Redis.delete(f"{Fast}{sender_id}botuser")
@@ -531,10 +530,9 @@ def Run(msg, data):
                     send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                     time.sleep(1)
-                    subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt -q 2>&1 || true", shell=True)
-                    time.sleep(2)
-                    subprocess.run(f"screen -m -d -S {userbot_val} sh -c 'cd @{userbot_val} && python3 -m YukkiMusic'", shell=True)
-                    time.sleep(3)
+                    subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
+                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1'", shell=True)
+                    time.sleep(5)
 
                     # Cleanup
                     for k in ['bottoken', 'dev:user', 'dev:id', 'app:id', 'api:hash', 'session', 'helper', 'ch:7oda', 'make:bot', 'gp:id', 'gp:user', 'mongoDB']:
@@ -600,6 +598,25 @@ def Run(msg, data):
             else:
                 txx = "• لا توجد بوتات مصنوعه"
             send(msg.get('chat_id', chat_id), msg.get('id', msg_id), txx)
+
+        if text and text.startswith("✨ log "):
+            bot_name = text.replace("✨ log ", "").strip().lstrip("@")
+            log_file = f"/tmp/{bot_name}_bot.log"
+            try:
+                with open(log_file, "r") as lf:
+                    log_content = lf.read()
+                if log_content.strip():
+                    # Send last 4000 chars
+                    if len(log_content) > 4000:
+                        log_content = "..." + log_content[-4000:]
+                    send(chat_id, msg_id, "```" + log_content + "```", "md", True)
+                else:
+                    send(chat_id, msg_id, "✨ ملف اللوج فارغ - البوت لسه مشتغلش أو مشيقع", "md", True)
+            except FileNotFoundError:
+                send(chat_id, msg_id, f"✨ مفيش ملف log للبوت @{bot_name}\n✨ تأكد إنك كتبت اسم البوت صح", "md", True)
+            except Exception as e:
+                send(chat_id, msg_id, f"✨ خطأ: {e}", "md", True)
+            return False
 
         if text == "✨ الاسكرينات المفتوحه":
             rqm = 0
@@ -876,10 +893,9 @@ def Run(msg, data):
                     send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                     time.sleep(1)
-                    subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt -q 2>&1 || true", shell=True)
-                    time.sleep(2)
-                    subprocess.run(f"screen -m -d -S {userbot_val} sh -c 'cd @{userbot_val} && python3 -m YukkiMusic'", shell=True)
-                    time.sleep(3)
+                    subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
+                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1'", shell=True)
+                    time.sleep(5)
 
                     # Cleanup
                     for k in ['bottoken', 'dev:user', 'dev:id', 'app:id', 'api:hash', 'session', 'helper', 'ch:7oda', 'make:bot', 'gp:id', 'gp:user', 'mongoDB']:
