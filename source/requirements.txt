@@ -30,3 +30,7 @@ apscheduler
 telegraph[aio]
 asyncstdlib
 pyyaml
+heroku3
+lyricsgenius
+spotipy
+speedtest-cli
