@@ -197,7 +197,14 @@ class FastBots:
                 clean[k] = json.dumps(v)
         try:
             res = requests.post(url, data=clean, timeout=30)
-            return res.json() if res.status_code == 200 else None
+            if res.status_code != 200:
+                try:
+                    err = res.json()
+                    print(f"API error ({method}): {err.get('description', res.text[:200])}")
+                except Exception:
+                    print(f"API error ({method}): HTTP {res.status_code}")
+                return None
+            return res.json()
         except Exception as e:
             print(f"API call error ({method}): {e}")
             return None

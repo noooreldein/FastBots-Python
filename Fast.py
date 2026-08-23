@@ -186,12 +186,20 @@ def sleep(n):
     time.sleep(n)
 
 def Dev(msg):
-    dev_list = [Sudo_Id, 5675627801, 5041044821, 5512718660]
+    dev_list = [str(Sudo_Id), '5675627801', '5041044821', '5512718660']
     if isinstance(msg, dict):
         sender = msg.get('sender_id', {})
         if isinstance(sender, dict):
-            sender_user_id = sender.get('user_id', 0)
-            return str(sender_user_id) in [str(d) for d in dev_list]
+            sender_user_id = str(sender.get('user_id', 0))
+            # Check hardcoded list
+            if sender_user_id in dev_list:
+                return True
+            # Check Redis dev set (added via "رفع مطور <id>")
+            try:
+                if r_sismember(f"{Fast}Dev", sender_user_id):
+                    return True
+            except Exception:
+                pass
     return False
 
 def scandirfile(directory):
@@ -750,6 +758,7 @@ def Run(msg, data):
             Redis.delete(f"{Fast}{sender_id}gp:user")
             Redis.delete(f"{Fast}{sender_id}mongoDB")
             send(chat_id, msg_id, "\n✨ تم الغاء الامر بنجاح ")
+            return False
 
         if text == "/start":
             if not r_sismember(f"{Fast}total", sender_id):
@@ -773,11 +782,11 @@ def Run(msg, data):
                 'is_personal': True,
                 'data': [
                     [
-                        {'text': '✨ صنع بوت', 'type': 'text', 'style': 'success', 'icon_custom_emoji_id': 2000000000000000001},
-                        {'text': '✨ حذف البوت', 'type': 'text', 'style': 'danger', 'icon_custom_emoji_id': 2000000000000000002}
+                        {'text': '✨ صنع بوت', 'type': 'text', 'style': 'success', 'icon_custom_emoji_id': 5319101633550896862},
+                        {'text': '✨ حذف البوت', 'type': 'text', 'style': 'danger', 'icon_custom_emoji_id': 5307659638810877853}
                     ],
                     [
-                        {'text': '✨ الغاء', 'type': 'text', 'style': 'danger', 'icon_custom_emoji_id': 2000000000000000003}
+                        {'text': '✨ الغاء', 'type': 'text', 'style': 'danger', 'icon_custom_emoji_id': 5974342591552952895}
                     ]
                 ]
             })
