@@ -447,89 +447,89 @@ def Run(msg, data):
             else:
                 return send(chat_id, msg_id, "✨ المعرف ليس لمجموعه خارقه تأكد منه")
 
-        if text and r_get(f"{Fast}{sender_id}helper2"):
-            m_usr = re.match(r"^@(.*)$", text)
-            if m_usr:
-                UserName = m_usr.group(1)
-                Redis.set(f"{Fast}{sender_id}ch:7oda", UserName)
-                return send(chat_id, msg_id, "✨ تم حفظ قناه الاشتراك الاجباري \n✨ ارسل الان معرف جروب الدعم\nوتأكد ان البوت مشرف بالجروب !", "md", True)
-
-        if text and re.match(r"^(\d+)$", text) and r_get(f"{Fast}{sender_id}session"):
-            Redis.set(f"{Fast}{sender_id}helper", text)
-            send(chat_id, msg_id, "✨ تم حفظ ايدي الحساب المساعد ", "md", True)
-            token_val = r_get(f"{Fast}{sender_id}bottoken")
-            userbot_val = r_get(f"{Fast}{sender_id}botuser")
-            dev_user_val = r_get(f"{Fast}{sender_id}dev:user")
-            dev_id_val = r_get(f"{Fast}{sender_id}dev:id")
-            session_val = r_get(f"{Fast}{sender_id}session")
-
-            with open("./source/.env", "w", encoding="utf-8") as env_file:
-                env_file.write(f"API_ID = 10823881\nAPI_HASH = 339886e2109eb67203ce12022b32e035\nBOT_TOKEN = {token_val}\nMONGO_DB_URI = {random.choice(mongodb_list)}\nLOG_GROUP_ID={dev_id_val}\nMUSIC_BOT_NAME = {userbot_val}\nSTRING_SESSION = {session_val}\nOWNER_ID = {dev_id_val}")
-            time.sleep(3)
-            send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
-            subprocess.run(f"cp -a ./source/. ./@{userbot_val} && cd @{userbot_val} && chmod +x * && screen -m -d -S {userbot_val} python3.8 -m YukkiMusic", shell=True)
-            time.sleep(3)
-
-            Redis.delete(f"{Fast}{sender_id}bottoken")
-            Redis.delete(f"{Fast}{sender_id}dev:user")
-            Redis.delete(f"{Fast}{sender_id}dev:id")
-            Redis.delete(f"{Fast}{sender_id}app:id")
-            Redis.delete(f"{Fast}{sender_id}api:hash")
-            Redis.delete(f"{Fast}{sender_id}session")
-            Redis.delete(f"{Fast}{sender_id}helper")
-            Redis.delete(f"{Fast}{sender_id}ch:7oda")
-            Redis.delete(f"{Fast}{sender_id}make:bot")
-            Redis.delete(f"{Fast}{sender_id}gp:id")
-            Redis.delete(f"{Fast}{sender_id}gp:user")
-            Redis.delete(f"{Fast}{sender_id}mongoDB")
-
-            send(Sudo_Id, 0, f"✨ تم تنصيب بوت جديد \n✨ توكن البوت `{token_val}`\n✨ معرف المطور [@{dev_user_val}]", "md", True)
-            Redis.sadd(f"{Fast}bots", f"@{userbot_val} » @{dev_user_val}")
-            send(chat_id, msg_id, "✨ تم تشغيل البوت بنجاح \n✨ في حاله لم يعمل البوت هذا يعني وجود خطأ في احدى البيانات اللتي ارسلتها", "md", True)
-            return send(chat_id, msg_id, "✨ تم حفظ جروب الدعم بنجاح \n✨ جاري التشغيل", "md", True)
-
-        if text and r_get(f"{Fast}{sender_id}api:hash"):
-            Redis.set(f"{Fast}{sender_id}session", text)
-            return send(chat_id, msg_id, "✨ تم حفظ جلسه البايروجرام \n✨ ارسل الان ايدي الحساب المساعد", "md", True)
-
-        if text and r_get(f"{Fast}{sender_id}app:id2"):
-            UserName = text
-            if UserName:
-                Redis.set(f"{Fast}{sender_id}api:hash", UserName)
-                return send(chat_id, msg_id, "✨ تم حفظ Api_hash \n✨ ارسل الان ال جلسه البايروجرام \n✨ احصل عليه من هنا @s_stbot")
-            else:
-                send(chat_id, msg_id, "✨ تأكد من App_id  ! ")
-
-        if text and r_get(f"{Fast}{sender_id}dev:user2"):
-            m_appid = re.match(r"(\d+)", text)
-            if m_appid:
-                UserName = m_appid.group(1)
-                Redis.set(f"{Fast}{sender_id}app:id", UserName)
-                return send(chat_id, msg_id, "✨ تم حفظ App_id \n✨ ارسل الان ال Api_hash \n✨ احصل عليه من هنا https://my.telegram.org")
-            else:
-                send(chat_id, msg_id, "✨ تأكد من App_id  ! ")
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "devid":
+            m_devid = re.match(r"^(\d+)$", text)
+            if m_devid:
+                DevId = m_devid.group(1)
+                Redis.set(f"{Fast}{sender_id}dev:id", DevId)
+                Redis.set(f"{Fast}{sender_id}make:bot", "session")
+                return send(chat_id, msg_id, "✨ تم حفظ مطور البوت \n✨ ارسل الان جلسه البايروجرام \n✨ احصل عليه من هنا @s_stbot")
+            send(chat_id, msg_id, "✨ ارسل ايدي المطور بشكل صحيح (ارقام فقط) ", "md", True)
+            return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "devuser":
             m_devusr = re.match(r"^@(.*)$", text)
             if m_devusr:
                 UserName = m_devusr.group(1)
-                UserId_Info = bot.searchPublicChat(UserName)
-                if not isinstance(UserId_Info, dict) or not UserId_Info.get('id'):
-                    send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
-                    return False
-                if UserId_Info.get('type', {}).get('is_channel') is True:
-                    send(chat_id, msg_id, "✨ اليوزر لقناه او مجموعه تأكد منه", "md", True)
-                    return False
                 if re.search(r'(\S+)[Bb][Oo][Tt]', UserName):
                     send(chat_id, msg_id, "✨ عذرا يجب ان تستخدم معرف لحساب شخصي فقط ", "md", True)
                     return False
-
-                Redis.set(f"{Fast}{sender_id}api:hash", UserName)
                 Redis.set(f"{Fast}{sender_id}dev:user", UserName)
-                Redis.set(f"{Fast}{sender_id}dev:id", UserId_Info['id'])
-                return send(chat_id, msg_id, "✨ تم حفظ المطور الاساسي \n✨ ارسل الان ال جلسه البايروجرام \n✨ احصل عليه من هنا @s_stbot")
-            else:
-                send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
+                Redis.set(f"{Fast}{sender_id}make:bot", "devid")
+                return send(chat_id, msg_id, "✨ تم حفظ معرف المطور \n✨ ارسل الان ايدي المطور (رقمي) \n✨ احصل عليه من @userinfobot")
+            send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "session":
+            if text:
+                Redis.set(f"{Fast}{sender_id}session", text)
+                Redis.set(f"{Fast}{sender_id}make:bot", "helper")
+                return send(chat_id, msg_id, "✨ تم حفظ جلسه البايروجرام \n✨ ارسل الان ايدي الحساب المساعد")
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "helper":
+            m_helper = re.match(r"^(\d+)$", text)
+            if m_helper:
+                Redis.set(f"{Fast}{sender_id}helper", text)
+                Redis.set(f"{Fast}{sender_id}make:bot", "channel")
+                return send(chat_id, msg_id, "✨ تم حفظ ايدي الحساب المساعد \n✨ ارسل الان معرف قناة الاشتراك الاجباري")
+            send(chat_id, msg_id, "✨ ارسل ايدي الحساب المساعد بشكل صحيح ", "md", True)
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "channel":
+            m_chan = re.match(r"^@(.*)$", text)
+            if m_chan:
+                ChanUser = m_chan.group(1)
+                Redis.set(f"{Fast}{sender_id}ch:7oda", ChanUser)
+                Redis.set(f"{Fast}{sender_id}make:bot", "group")
+                return send(chat_id, msg_id, "✨ تم حفظ قناه الاشتراك الاجباري \n✨ ارسل الان معرف جروب الدعم \n✨ تأكد ان البوت مشرف بالجروب")
+            send(chat_id, msg_id, "✨ ارسل معرف القناة بشكل صحيح (مثل @channel) ", "md", True)
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "group":
+            m_grp = re.match(r"^@(.*)$", text)
+            if m_grp:
+                GrpUser = m_grp.group(1)
+                get = bot.searchPublicChat(GrpUser)
+                if isinstance(get, dict) and get.get('type', {}).get('supergroup_id'):
+                    Redis.set(f"{Fast}{sender_id}gp:user", GrpUser)
+                    Redis.set(f"{Fast}{sender_id}gp:id", f"-100{get['type']['supergroup_id']}")
+                    # All data collected - create the bot
+                    token_val = r_get(f"{Fast}{sender_id}bottoken")
+                    userbot_val = r_get(f"{Fast}{sender_id}botuser")
+                    dev_user_val = r_get(f"{Fast}{sender_id}dev:user")
+                    dev_id_val = r_get(f"{Fast}{sender_id}dev:id")
+                    session_val = r_get(f"{Fast}{sender_id}session")
+
+                    with open("./source/.env", "w", encoding="utf-8") as env_file:
+                        env_file.write(f"API_ID = 10823881\nAPI_HASH = 339886e2109eb67203ce12022b32e035\nBOT_TOKEN = {token_val}\nMONGO_DB_URI = {random.choice(mongodb_list)}\nLOG_GROUP_ID={dev_id_val}\nMUSIC_BOT_NAME = {userbot_val}\nSTRING_SESSION = {session_val}\nOWNER_ID = {dev_id_val}")
+                    time.sleep(3)
+                    send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
+                    subprocess.run(f"cp -a ./source/. ./@{userbot_val} && cd @{userbot_val} && chmod +x * && screen -m -d -S {userbot_val} python3.8 -m YukkiMusic", shell=True)
+                    time.sleep(3)
+
+                    # Cleanup
+                    for k in ['bottoken', 'dev:user', 'dev:id', 'app:id', 'api:hash', 'session', 'helper', 'ch:7oda', 'make:bot', 'gp:id', 'gp:user', 'mongoDB']:
+                        Redis.delete(f"{Fast}{sender_id}{k}")
+
+                    send(Sudo_Id, 0, f"✨ تم تنصيب بوت جديد \n✨ توكن البوت `{token_val}`\n✨ معرف المطور [@{dev_user_val}]", "md", True)
+                    Redis.sadd(f"{Fast}bots", f"@{userbot_val} » @{dev_user_val}")
+                    send(chat_id, msg_id, "✨ تم تشغيل البوت بنجاح \n✨ في حاله لم يعمل البوت هذا يعني وجود خطأ في احدى البيانات اللتي ارسلتها", "md", True)
+                    return send(chat_id, msg_id, "✨ تم حفظ جروب الدعم بنجاح \n✨ جاري التشغيل", "md", True)
+                else:
+                    return send(chat_id, msg_id, "✨ المعرف ليس لمجموعه خارقه تأكد منه")
+            send(chat_id, msg_id, "✨ ارسل معرف الجروب بشكل صحيح (مثل @group) ", "md", True)
+            return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "token":
             m_tok = re.match(r"(\d+):(.*)", text)
@@ -547,7 +547,7 @@ def Run(msg, data):
                     Redis.set(f"{Fast}{sender_id}botuser", botuser)
                     Redis.set(f"{Fast}{sender_id}bottoken", text)
                     Redis.set(f"{Fast}{sender_id}make:bot", "devuser")
-                    send(chat_id, msg_id, "\n✨ ارسل الان معرف المطور الاساسي ")
+                    send(chat_id, msg_id, "\n✨ ارسل الان معرف المطور الاساسي (مثل @username)")
                     return False
                 send(chat_id, msg_id, "\n✨ التوكن الذي ارسلته غير صحيح ")
                 return False
@@ -785,89 +785,90 @@ def Run(msg, data):
             return False
 
         # Regular user bot creation steps
-        if text and r_get(f"{Fast}{sender_id}helper2"):
-            m_usr = re.match(r"^@(.*)$", text)
-            if m_usr:
-                UserName = m_usr.group(1)
-                Redis.set(f"{Fast}{sender_id}ch:7oda", UserName)
-                return send(chat_id, msg_id, "✨ تم حفظ قناه الاشتراك الاجباري \n✨ ارسل الان معرف جروب الدعم \n وتأكد ان البوت مشرف بالجروب !", "md", True)
 
-        if text and re.match(r"^(\d+)$", text) and r_get(f"{Fast}{sender_id}session"):
-            Redis.set(f"{Fast}{sender_id}helper", text)
-            send(chat_id, msg_id, "✨ تم حفظ ايدي الحساب المساعد ", "md", True)
-            token_val = r_get(f"{Fast}{sender_id}bottoken")
-            userbot_val = r_get(f"{Fast}{sender_id}botuser")
-            dev_user_val = r_get(f"{Fast}{sender_id}dev:user")
-            dev_id_val = r_get(f"{Fast}{sender_id}dev:id")
-            session_val = r_get(f"{Fast}{sender_id}session")
-
-            with open("./source/.env", "w", encoding="utf-8") as env_file:
-                env_file.write(f"API_ID = 10823881\nAPI_HASH = 339886e2109eb67203ce12022b32e035\nBOT_TOKEN = {token_val}\nMONGO_DB_URI = {random.choice(mongodb_list)}\nLOG_GROUP_ID={dev_id_val}\nMUSIC_BOT_NAME = {userbot_val}\nSTRING_SESSION = {session_val}\nOWNER_ID = {dev_id_val}")
-            time.sleep(3)
-            send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
-            subprocess.run(f"cp -a ./source/. ./@{userbot_val} && cd @{userbot_val} && chmod +x * && screen -m -d -S {userbot_val} python3.8 -m YukkiMusic", shell=True)
-            time.sleep(3)
-
-            Redis.delete(f"{Fast}{sender_id}bottoken")
-            Redis.delete(f"{Fast}{sender_id}dev:user")
-            Redis.delete(f"{Fast}{sender_id}dev:id")
-            Redis.delete(f"{Fast}{sender_id}app:id")
-            Redis.delete(f"{Fast}{sender_id}api:hash")
-            Redis.delete(f"{Fast}{sender_id}session")
-            Redis.delete(f"{Fast}{sender_id}helper")
-            Redis.delete(f"{Fast}{sender_id}ch:7oda")
-            Redis.delete(f"{Fast}{sender_id}make:bot")
-            Redis.delete(f"{Fast}{sender_id}gp:id")
-            Redis.delete(f"{Fast}{sender_id}gp:user")
-            Redis.delete(f"{Fast}{sender_id}mongoDB")
-
-            send(Sudo_Id, 0, f"✨ تم تنصيب بوت جديد \n✨ توكن البوت `{token_val}`\n✨ معرف المطور [@{dev_user_val}]", "md", True)
-            Redis.sadd(f"{Fast}bots", f"@{userbot_val} » @{dev_user_val}")
-            send(chat_id, msg_id, "✨ تم تشغيل البوت بنجاح \n✨ في حاله لم يعمل البوت هذا يعني وجود خطأ في احدى البيانات اللتي ارسلتها", "md", True)
-            return send(chat_id, msg_id, "✨ تم حفظ جروب الدعم بنجاح \n✨ جاري التشغيل", "md", True)
-
-        if text and r_get(f"{Fast}{sender_id}api:hash"):
-            Redis.set(f"{Fast}{sender_id}session", text)
-            return send(chat_id, msg_id, "✨ تم حفظ جلسه البايروجرام \n✨ ارسل الان ايدي الحساب المساعد", "md", True)
-
-        if text and r_get(f"{Fast}{sender_id}app:id2"):
-            UserName = text
-            if UserName:
-                Redis.set(f"{Fast}{sender_id}api:hash", UserName)
-                return send(chat_id, msg_id, "✨ تم حفظ Api_hash \n✨ ارسل الان ال جلسه البايروجرام \n✨ احصل عليه من هنا @s_stbot")
-            else:
-                send(chat_id, msg_id, "✨ تأكد من App_id  ! ")
-
-        if text and r_get(f"{Fast}{sender_id}dev:user2"):
-            m_appid = re.match(r"(\d+)", text)
-            if m_appid:
-                UserName = m_appid.group(1)
-                Redis.set(f"{Fast}{sender_id}app:id", UserName)
-                return send(chat_id, msg_id, "✨ تم حفظ App_id \n✨ ارسل الان ال Api_hash \n✨ احصل عليه من هنا https://my.telegram.org")
-            else:
-                send(chat_id, msg_id, "✨ تأكد من App_id  ! ")
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "devid":
+            m_devid = re.match(r"^(\d+)$", text)
+            if m_devid:
+                DevId = m_devid.group(1)
+                Redis.set(f"{Fast}{sender_id}dev:id", DevId)
+                Redis.set(f"{Fast}{sender_id}make:bot", "session")
+                return send(chat_id, msg_id, "✨ تم حفظ مطور البوت \n✨ ارسل الان جلسه البايروجرام \n✨ احصل عليه من هنا @s_stbot")
+            send(chat_id, msg_id, "✨ ارسل ايدي المطور بشكل صحيح (ارقام فقط) ", "md", True)
+            return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "devuser":
             m_devusr = re.match(r"^@(.*)$", text)
             if m_devusr:
                 UserName = m_devusr.group(1)
-                UserId_Info = bot.searchPublicChat(UserName)
-                if not isinstance(UserId_Info, dict) or not UserId_Info.get('id'):
-                    send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
-                    return False
-                if UserId_Info.get('type', {}).get('is_channel') is True:
-                    send(chat_id, msg_id, "✨ اليوزر لقناه او مجموعه تأكد منه", "md", True)
-                    return False
                 if re.search(r'(\S+)[Bb][Oo][Tt]', UserName):
                     send(chat_id, msg_id, "✨ عذرا يجب ان تستخدم معرف لحساب شخصي فقط ", "md", True)
                     return False
-
-                Redis.set(f"{Fast}{sender_id}api:hash", UserName)
                 Redis.set(f"{Fast}{sender_id}dev:user", UserName)
-                Redis.set(f"{Fast}{sender_id}dev:id", UserId_Info['id'])
-                return send(chat_id, msg_id, "✨ تم حفظ المطور الاساسي \n✨ ارسل الان ال جلسه البايروجرام \n✨ احصل عليه من هنا @s_stbot")
-            else:
-                send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
+                Redis.set(f"{Fast}{sender_id}make:bot", "devid")
+                return send(chat_id, msg_id, "✨ تم حفظ معرف المطور \n✨ ارسل الان ايدي المطور (رقمي) \n✨ احصل عليه من @userinfobot")
+            send(chat_id, msg_id, "✨ اليوزر ليس لحساب شخصي تأكد منه ", "md", True)
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "session":
+            if text:
+                Redis.set(f"{Fast}{sender_id}session", text)
+                Redis.set(f"{Fast}{sender_id}make:bot", "helper")
+                return send(chat_id, msg_id, "✨ تم حفظ جلسه البايروجرام \n✨ ارسل الان ايدي الحساب المساعد")
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "helper":
+            m_helper = re.match(r"^(\d+)$", text)
+            if m_helper:
+                Redis.set(f"{Fast}{sender_id}helper", text)
+                Redis.set(f"{Fast}{sender_id}make:bot", "channel")
+                return send(chat_id, msg_id, "✨ تم حفظ ايدي الحساب المساعد \n✨ ارسل الان معرف قناة الاشتراك الاجباري")
+            send(chat_id, msg_id, "✨ ارسل ايدي الحساب المساعد بشكل صحيح ", "md", True)
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "channel":
+            m_chan = re.match(r"^@(.*)$", text)
+            if m_chan:
+                ChanUser = m_chan.group(1)
+                Redis.set(f"{Fast}{sender_id}ch:7oda", ChanUser)
+                Redis.set(f"{Fast}{sender_id}make:bot", "group")
+                return send(chat_id, msg_id, "✨ تم حفظ قناه الاشتراك الاجباري \n✨ ارسل الان معرف جروب الدعم \n✨ تأكد ان البوت مشرف بالجروب")
+            send(chat_id, msg_id, "✨ ارسل معرف القناة بشكل صحيح (مثل @channel) ", "md", True)
+            return False
+
+        if text and r_get(f"{Fast}{sender_id}make:bot") == "group":
+            m_grp = re.match(r"^@(.*)$", text)
+            if m_grp:
+                GrpUser = m_grp.group(1)
+                get = bot.searchPublicChat(GrpUser)
+                if isinstance(get, dict) and get.get('type', {}).get('supergroup_id'):
+                    Redis.set(f"{Fast}{sender_id}gp:user", GrpUser)
+                    Redis.set(f"{Fast}{sender_id}gp:id", f"-100{get['type']['supergroup_id']}")
+                    # All data collected - create the bot
+                    token_val = r_get(f"{Fast}{sender_id}bottoken")
+                    userbot_val = r_get(f"{Fast}{sender_id}botuser")
+                    dev_user_val = r_get(f"{Fast}{sender_id}dev:user")
+                    dev_id_val = r_get(f"{Fast}{sender_id}dev:id")
+                    session_val = r_get(f"{Fast}{sender_id}session")
+
+                    with open("./source/.env", "w", encoding="utf-8") as env_file:
+                        env_file.write(f"API_ID = 10823881\nAPI_HASH = 339886e2109eb67203ce12022b32e035\nBOT_TOKEN = {token_val}\nMONGO_DB_URI = {random.choice(mongodb_list)}\nLOG_GROUP_ID={dev_id_val}\nMUSIC_BOT_NAME = {userbot_val}\nSTRING_SESSION = {session_val}\nOWNER_ID = {dev_id_val}")
+                    time.sleep(3)
+                    send(chat_id, 0, "✨ تم حفظ بيانات البوت جاري التشغيل يرجي الانتظار ...", "md", True)
+                    subprocess.run(f"cp -a ./source/. ./@{userbot_val} && cd @{userbot_val} && chmod +x * && screen -m -d -S {userbot_val} python3.8 -m YukkiMusic", shell=True)
+                    time.sleep(3)
+
+                    # Cleanup
+                    for k in ['bottoken', 'dev:user', 'dev:id', 'app:id', 'api:hash', 'session', 'helper', 'ch:7oda', 'make:bot', 'gp:id', 'gp:user', 'mongoDB']:
+                        Redis.delete(f"{Fast}{sender_id}{k}")
+
+                    send(Sudo_Id, 0, f"✨ تم تنصيب بوت جديد \n✨ توكن البوت `{token_val}`\n✨ معرف المطور [@{dev_user_val}]", "md", True)
+                    Redis.sadd(f"{Fast}bots", f"@{userbot_val} » @{dev_user_val}")
+                    send(chat_id, msg_id, "✨ تم تشغيل البوت بنجاح \n✨ في حاله لم يعمل البوت هذا يعني وجود خطأ في احدى البيانات اللتي ارسلتها", "md", True)
+                    return send(chat_id, msg_id, "✨ تم حفظ جروب الدعم بنجاح \n✨ جاري التشغيل", "md", True)
+                else:
+                    return send(chat_id, msg_id, "✨ المعرف ليس لمجموعه خارقه تأكد منه")
+            send(chat_id, msg_id, "✨ ارسل معرف الجروب بشكل صحيح (مثل @group) ", "md", True)
+            return False
 
         if text and r_get(f"{Fast}{sender_id}make:bot") == "token":
             m_tok = re.match(r"(\d+):(.*)", text)
@@ -885,7 +886,7 @@ def Run(msg, data):
                     Redis.set(f"{Fast}{sender_id}botuser", botuser)
                     Redis.set(f"{Fast}{sender_id}bottoken", text)
                     Redis.set(f"{Fast}{sender_id}make:bot", "devuser")
-                    send(chat_id, msg_id, "\n✨ ارسل الان معرف المطور الاساسي ")
+                    send(chat_id, msg_id, "\n✨ ارسل الان معرف المطور الاساسي (مثل @username)")
                     return False
                 send(chat_id, msg_id, "\n✨ التوكن الذي ارسلته غير صحيح ")
                 return False

@@ -11,6 +11,7 @@ import time
 import base64
 import requests
 import threading
+import traceback
 from typing import Any, Optional, List, Dict, Callable
 
 # ------------------------------------------------------------------
@@ -327,12 +328,13 @@ class FastBots:
         return self.forwardMessages(chat_id, from_chat_id, [message_id])
 
     # --- Forward ---
-    def forwardMessages(self, chat_id, from_chat_id, message_ids, **kwargs):
+    def forwardMessages(self, chat_id, from_chat_id, message_ids, send_copy=0, disable_notification=0, from_background=True, as_album=False, server_oid=0, **kwargs):
+        """Forward messages. Accepts TDLib-style 9-arg calls for compatibility."""
         if isinstance(message_ids, list):
             for mid in message_ids:
                 self._api_call('forwardMessage', chat_id=chat_id, from_chat_id=from_chat_id, message_id=mid)
         else:
-            self._api_call('forwardMessage', chat_id=chat_id, from_chat_id=from_chat_id, message_ids=message_ids)
+            self._api_call('forwardMessage', chat_id=chat_id, from_chat_id=from_chat_id, message_id=message_ids)
         return {'ok': True}
 
     # --- Edit ---
