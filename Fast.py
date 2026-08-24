@@ -1050,8 +1050,6 @@ if _ffmpeg_check.returncode != 0:
 else:
     print(f"✅ ffmpeg found: {_ffmpeg_check.stdout.strip()}")
 
-if __name__ == "__main__":
-    run_with_retry()
 
 
 # ------------------------------------------------------------------
@@ -1093,3 +1091,6 @@ def run_with_retry(max_retries=2):
                 final_msg = f"❌ FastBots فشل يشغل بعد {max_retries + 1} محاولات\n\nآخر خطأ:\n{str(e)[:500]}"
                 print(final_msg)
                 send_error_to_admin(final_msg)
+
+if __name__ == "__main__":
+    run_with_retry()
