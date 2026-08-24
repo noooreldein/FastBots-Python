@@ -459,7 +459,7 @@ def Run(msg, data):
                 subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                 time.sleep(1)
                 subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
-                subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'if [ -f \"{os.getcwd()}/source/bot_watchdog.sh\" ]; then bash {os.getcwd()}/source/bot_watchdog.sh {userbot_val} {os.getcwd()}/@{userbot_val} {Token} {Sudo_Id}; else cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1; fi'", shell=True)
+                subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && bash start.sh {Token} {Sudo_Id}'", shell=True)
                 time.sleep(5)
 
                 Redis.delete(f"{Fast}{sender_id}bottoken")
@@ -556,7 +556,7 @@ def Run(msg, data):
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                     time.sleep(1)
                     subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
-                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'if [ -f \"{os.getcwd()}/source/bot_watchdog.sh\" ]; then bash {os.getcwd()}/source/bot_watchdog.sh {userbot_val} {os.getcwd()}/@{userbot_val} {Token} {Sudo_Id}; else cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1; fi'", shell=True)
+                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && bash start.sh {Token} {Sudo_Id}'", shell=True)
                     time.sleep(5)
 
                     # Cleanup
@@ -919,7 +919,7 @@ def Run(msg, data):
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                     time.sleep(1)
                     subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
-                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'if [ -f \"{os.getcwd()}/source/bot_watchdog.sh\" ]; then bash {os.getcwd()}/source/bot_watchdog.sh {userbot_val} {os.getcwd()}/@{userbot_val} {Token} {Sudo_Id}; else cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1; fi'", shell=True)
+                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && bash start.sh {Token} {Sudo_Id}'", shell=True)
                     time.sleep(5)
 
                     # Cleanup
