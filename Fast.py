@@ -459,7 +459,7 @@ def Run(msg, data):
                 subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                 time.sleep(1)
                 subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
-                subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1'", shell=True)
+                subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'bash {os.getcwd()}/source/bot_watchdog.sh {userbot_val} {os.getcwd()}/@{userbot_val} {Token} {Sudo_Id}'", shell=True)
                 time.sleep(5)
 
                 Redis.delete(f"{Fast}{sender_id}bottoken")
@@ -556,7 +556,7 @@ def Run(msg, data):
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                     time.sleep(1)
                     subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
-                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1'", shell=True)
+                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'bash {os.getcwd()}/source/bot_watchdog.sh {userbot_val} {os.getcwd()}/@{userbot_val} {Token} {Sudo_Id}'", shell=True)
                     time.sleep(5)
 
                     # Cleanup
@@ -919,7 +919,7 @@ def Run(msg, data):
                     subprocess.run(f"cp -a ./source/. ./@{userbot_val}", shell=True)
                     time.sleep(1)
                     subprocess.run(f"cd @{userbot_val} && pip3 install -r requirements.txt 2>&1 | tail -5", shell=True, timeout=300)
-                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'cd {os.getcwd()}/@{userbot_val} && python3 -m YukkiMusic > /tmp/{userbot_val}_bot.log 2>&1'", shell=True)
+                    subprocess.run(f"screen -m -d -S {userbot_val} bash -c 'bash {os.getcwd()}/source/bot_watchdog.sh {userbot_val} {os.getcwd()}/@{userbot_val} {Token} {Sudo_Id}'", shell=True)
                     time.sleep(5)
 
                     # Cleanup
@@ -1051,4 +1051,45 @@ else:
     print(f"✅ ffmpeg found: {_ffmpeg_check.stdout.strip()}")
 
 if __name__ == "__main__":
-    bot.run(callback)
+    run_with_retry()
+
+
+# ------------------------------------------------------------------
+# Error Handler & Auto-Restart for Main Bot
+# ------------------------------------------------------------------
+def send_error_to_admin(error_text):
+    """Send error message to admin via Telegram Bot API"""
+    try:
+        import urllib.parse as _urlparse
+        safe_text = _urlparse.quote(str(error_text)[:4000])
+        requests.get(
+            f"https://api.telegram.org/bot{Token}/sendMessage",
+            params={"chat_id": Sudo_Id, "text": str(error_text)[:4000]},
+            timeout=10
+        )
+    except Exception:
+        pass
+
+def run_with_retry(max_retries=2):
+    """Run the main bot with auto-retry on crash"""
+    for attempt in range(1, max_retries + 2):
+        try:
+            print(f"🚀 FastBots starting (attempt {attempt}/{max_retries + 1})...")
+            bot.run(callback)
+        except KeyboardInterrupt:
+            print("\n⛔ FastBots stopped by user.")
+            break
+        except Exception as e:
+            import traceback
+            error_details = traceback.format_exc()
+            error_msg = f"⚠️ FastBots crashed (attempt {attempt}/{max_retries + 1})\n\nError: {str(e)[:500]}\n\n{error_details[:1500]}"
+            print(error_msg)
+            send_error_to_admin(error_msg)
+
+            if attempt <= max_retries:
+                print(f"⏳ Retrying in 5 seconds...")
+                time.sleep(5)
+            else:
+                final_msg = f"❌ FastBots فشل يشغل بعد {max_retries + 1} محاولات\n\nآخر خطأ:\n{str(e)[:500]}"
+                print(final_msg)
+                send_error_to_admin(final_msg)
